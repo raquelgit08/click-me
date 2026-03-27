@@ -111,22 +111,23 @@
         }
         
         .envelopes-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            grid-template-rows: repeat(5, 1fr) !important;
+            gap: 30px !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
             position: relative;
             z-index: 10;
-            padding: 30px;
-            width: 100%;
+            padding: 30px !important;
+            width: 100% !important;
         }
         
         .envelope-item {
             position: relative;
-            width: 100%;
-            min-width: 0;
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: none !important;
         }
         
         .envelope {
@@ -583,9 +584,14 @@
         
         @media (max-width: 480px) {
             .envelopes-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(5, 1fr);
-                gap: 20px;
+                grid-template-columns: 1fr !important;
+                grid-template-rows: repeat(10, 1fr) !important;
+                gap: 15px !important;
+                padding: 15px !important;
+            }
+            
+            .envelope {
+                height: 160px !important;
             }
         }
     </style>
