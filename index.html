@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Letter Feature</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .letters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .envelope-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out;
+            z-index: 2;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+
+        .envelope-flap.open {
+            transform: rotateX(-180deg);
+        }
+
+        .envelope-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .envelope-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        .envelope-content .mail-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .envelope-content h6 {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .envelope-content p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .envelope-content .arrow {
+            margin-top: 8px;
+            font-size: 20px;
+        }
+
+        .letter-container {
+            min-height: 400px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: none;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .letter-container.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .letter-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .letter-header h6 {
+            margin: 0;
+        }
+
+        .close-button {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .close-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .letter-content {
+            padding: 24px;
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        .letter-to {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .letter-divider {
+            margin: 16px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+
+        .letter-signature {
+            text-align: right;
+            margin-top: 24px;
+            font-style: italic;
+            color: #666;
+        }
+
+        .letter-from {
+            font-size: 0.9rem;
+        }
+
+        /* Hide envelope when letter is open */
+        .envelope-container.letter-open .envelope {
+            display: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .letters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Open Letter Feature</h1>
+            <p>Click on the envelope below to reveal your special message</p>
+        </div>
+
+        <div class="letters-grid">
+            <!-- Letter 1 -->
+            <div class="letter-wrapper">
+                <div class="envelope-container" id="envelope1">
+                    <div class="envelope" onclick="openLetter('letter1')">
+                        <div class="envelope-flap"></div>
+                        <div class="envelope-body"></div>
+                        <div class="envelope-content">
+                            <div class="mail-icon">✉️</div>
+                            <h6>Welcome Message</h6>
+                            <p>Click to open</p>
+                            <div class="arrow">▼</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="letter-container" id="letter1">
+                    <div class="letter-header">
+                        <h6>Welcome Message</h6>
+                        <button class="close-button" onclick="closeLetter('letter1')">✕</button>
+                    </div>
+                    <div class="letter-content">
+                        <div class="letter-to">To: Valued User</div>
+                        <hr class="letter-divider">
+                        Dear Valued User,
+
+Welcome to our Open Letter feature! This interactive component allows you to create engaging letter-opening experiences for your users.
+
+You can customize the content, sender, and recipient information to create personalized messages for any occasion.
+
+Best regards,
+System Admin
+                        <hr class="letter-divider">
+                        <div class="letter-signature">
+                            <div class="letter-from">From: System Admin</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter 2 -->
+            <div class="letter-wrapper">
+                <div class="envelope-container" id="envelope2">
+                    <div class="envelope" onclick="openLetter('letter2')">
+                        <div class="envelope-flap"></div>
+                        <div class="envelope-body"></div>
+                        <div class="envelope-content">
+                            <div class="mail-icon">✉️</div>
+                            <h6>Special Announcement</h6>
+                            <p>Click to open</p>
+                            <div class="arrow">▼</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="letter-container" id="letter2">
+                    <div class="letter-header">
+                        <h6>Special Announcement</h6>
+                        <button class="close-button" onclick="closeLetter('letter2')">✕</button>
+                    </div>
+                    <div class="letter-content">
+                        <div class="letter-to">To: All Staff</div>
+                        <hr class="letter-divider">
+                        Dear Team,
+
+We are excited to announce the launch of our new Open Letter feature! This adds a creative way to display important messages and announcements.
+
+Feel free to explore and provide feedback on this new functionality.
+
+Thank you for your continued support!
+
+Management Team
+                        <hr class="letter-divider">
+                        <div class="letter-signature">
+                            <div class="letter-from">From: Management</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter 3 -->
+            <div class="letter-wrapper">
+                <div class="envelope-container" id="envelope3">
+                    <div class="envelope" onclick="openLetter('letter3')">
+                        <div class="envelope-flap"></div>
+                        <div class="envelope-body"></div>
+                        <div class="envelope-content">
+                            <div class="mail-icon">✉️</div>
+                            <h6>Thank You Note</h6>
+                            <p>Click to open</p>
+                            <div class="arrow">▼</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="letter-container" id="letter3">
+                    <div class="letter-header">
+                        <h6>Thank You Note</h6>
+                        <button class="close-button" onclick="closeLetter('letter3')">✕</button>
+                    </div>
+                    <div class="letter-content">
+                        <div class="letter-to">To: Our Users</div>
+                        <hr class="letter-divider">
+                        Dear Amazing Users,
+
+Thank you for being part of our journey! Your feedback and support help us continuously improve our platform.
+
+This Open Letter feature is just one of many enhancements we're working on to make your experience better.
+
+With gratitude,
+The Development Team
+                        <hr class="letter-divider">
+                        <div class="letter-signature">
+                            <div class="letter-from">From: Development Team</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter 4 -->
+            <div class="letter-wrapper">
+                <div class="envelope-container" id="envelope4">
+                    <div class="envelope" onclick="openLetter('letter4')">
+                        <div class="envelope-flap"></div>
+                        <div class="envelope-body"></div>
+                        <div class="envelope-content">
+                            <div class="mail-icon">✉️</div>
+                            <h6>Personal Message</h6>
+                            <p>Click to open</p>
+                            <div class="arrow">▼</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="letter-container" id="letter4">
+                    <div class="letter-header">
+                        <h6>Personal Message</h6>
+                        <button class="close-button" onclick="closeLetter('letter4')">✕</button>
+                    </div>
+                    <div class="letter-content">
+                        <div class="letter-to">To: You</div>
+                        <hr class="letter-divider">
+                        Hey there!
+
+Sometimes the smallest things bring the most joy. We hope this little interactive letter brings a smile to your face.
+
+Remember that every click, every interaction, and every moment matters.
+
+Stay awesome!
+
+A Friend
+                        <hr class="letter-divider">
+                        <div class="letter-signature">
+                            <div class="letter-from">From: A Friend</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openLetter(letterId) {
+            const envelopeContainer = document.getElementById('envelope' + letterId.slice(-1));
+            const letterContainer = document.getElementById(letterId);
+            const envelopeFlap = envelopeContainer.querySelector('.envelope-flap');
+            
+            // Animate envelope flap opening
+            envelopeFlap.classList.add('open');
+            
+            // Show letter after flap animation
+            setTimeout(() => {
+                envelopeContainer.classList.add('letter-open');
+                letterContainer.classList.add('show');
+            }, 300);
+        }
+
+        function closeLetter(letterId) {
+            const envelopeContainer = document.getElementById('envelope' + letterId.slice(-1));
+            const letterContainer = document.getElementById(letterId);
+            const envelopeFlap = envelopeContainer.querySelector('.envelope-flap');
+            
+            // Hide letter
+            letterContainer.classList.remove('show');
+            
+            // Show envelope and reset flap after letter animation
+            setTimeout(() => {
+                envelopeContainer.classList.remove('letter-open');
+                envelopeFlap.classList.remove('open');
+            }, 200);
+        }
+    </script>
+</body>
+</html>
