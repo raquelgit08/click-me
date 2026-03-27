@@ -112,14 +112,14 @@
         
         .envelopes-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 40px;
-            max-width: 1400px;
+            gap: 60px;
+            max-width: 900px;
             margin: 0 auto;
             position: relative;
             z-index: 10;
-            padding: 20px;
+            padding: 30px;
         }
         
         .envelope-item {
@@ -545,9 +545,9 @@
         @media (max-width: 768px) {
             .envelopes-grid {
                 grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, 1fr);
-                gap: 25px;
-                padding: 15px;
+                grid-template-rows: repeat(2, 1fr);
+                gap: 40px;
+                padding: 20px;
             }
             
             .envelope {
@@ -580,8 +580,8 @@
         @media (max-width: 480px) {
             .envelopes-grid {
                 grid-template-columns: 1fr;
-                grid-template-rows: repeat(6, 1fr);
-                gap: 20px;
+                grid-template-rows: repeat(4, 1fr);
+                gap: 30px;
             }
         }
     </style>
@@ -662,37 +662,9 @@
                 </div>
             </div>
         
-        <!-- Envelope 5 - For Miguel -->
-        <div class="envelope-item">
-            <div class="recipient-name">Miguel</div>
-            <div class="envelope" id="envelope-miguel" onclick="openLetter('miguel')">
-                <div class="envelope-front">
-                    <div class="envelope-flap" id="flap-miguel"></div>
-                    <div class="envelope-body"></div>
-                    <div class="envelope-content">
-                        <div class="envelope-icon">✉️</div>
-                        <div class="envelope-title">Special Message</div>
-                        <div class="envelope-subtitle">Click to open</div>
-                        <div class="envelope-arrow">▼</div>
-                    </div>
-                </div>
-            </div>
+        <!-- Envelope 5 - For Miguel (REMOVED) -->
         
-        <!-- Envelope 6 - For Ana -->
-        <div class="envelope-item">
-            <div class="recipient-name">Ana</div>
-            <div class="envelope" id="envelope-ana" onclick="openLetter('ana')">
-                <div class="envelope-front">
-                    <div class="envelope-flap" id="flap-ana"></div>
-                    <div class="envelope-body"></div>
-                    <div class="envelope-content">
-                        <div class="envelope-icon">✉️</div>
-                        <div class="envelope-title">Special Message</div>
-                        <div class="envelope-subtitle">Click to open</div>
-                        <div class="envelope-arrow">▼</div>
-                    </div>
-                </div>
-            </div>
+        <!-- Envelope 6 - For Ana (REMOVED) -->
     </div>
     
     <!-- Letters (hidden by default) -->
@@ -768,57 +740,15 @@ Sofia</div>
             <div class="letter-to">To: Sofia</div>
             <div class="letter-text">Dear Sofia,
 
-Your creativity and talent never cease to amaze me! The way you see beauty in ordinary things is a gift that makes the world more wonderful for everyone around you.
+Your creativity and talent never cease to amaze me! I've watched you push through late nights and early mornings, and your commitment amazes me.
 
-Thank you for sharing your art and your heart with us. Your perspective has opened my eyes to so many new possibilities.
+Don't forget to take breaks and celebrate your achievements - you've earned them! Your future is so bright, and I have no doubt you'll achieve all your dreams.
 
-Never stop creating, never stop dreaming. You're destined for amazing things!
+Thank you for being such an incredible role model. Keep shining bright!
 
-With endless appreciation,
-Miguel</div>
-            <div class="letter-signature">From: Miguel</div>
-        </div>
-    </div>
-    
-    <div class="letter" id="letter-miguel">
-        <div class="letter-header">
-            <div class="letter-title">Special Message for Miguel</div>
-            <button class="close-btn" onclick="closeLetter('miguel')">✕</button>
-        </div>
-        <div class="letter-content">
-            <div class="letter-to">To: Miguel</div>
-            <div class="letter-text">Dear Miguel,
-
-Your loyalty and friendship mean the world to me! Through thick and thin, you've always been the steady presence I can count on.
-
-I appreciate your wisdom and the way you always know just what to say to make things better. This world is a better place with you in it.
-
-Thank you for being my rock and my confidant. Life's journey is so much better with friends like you.
-
-With deepest gratitude,
-Ana</div>
-            <div class="letter-signature">From: Ana</div>
-        </div>
-    </div>
-    
-    <div class="letter" id="letter-ana">
-        <div class="letter-header">
-            <div class="letter-title">Special Message for Ana</div>
-            <button class="close-btn" onclick="closeLetter('ana')">✕</button>
-        </div>
-        <div class="letter-content">
-            <div class="letter-to">To: Ana</div>
-            <div class="letter-text">Dear Ana,
-
-Your compassion and kindness touch everyone you meet! I've seen how you go out of your way to help others, expecting nothing in return.
-
-The world needs more people like you - those who lead with love and empathy. Your presence makes every gathering warmer and every challenge more manageable.
-
-Thank you for being such a beautiful soul inside and out. Never stop being the amazing person you are!
-
-With love and respect,
-Juan</div>
-            <div class="letter-signature">From: Juan</div>
+With admiration,
+Carlos</div>
+            <div class="letter-signature">From: Carlos</div>
         </div>
     </div>
     
@@ -842,8 +772,6 @@ Juan</div>
                     <span class="name-tag">Maria</span>
                     <span class="name-tag">Carlos</span>
                     <span class="name-tag">Sofia</span>
-                    <span class="name-tag">Miguel</span>
-                    <span class="name-tag">Ana</span>
                 </div>
             </div>
         </div>
@@ -855,9 +783,7 @@ Juan</div>
             'juan': ['juan'], // Juan can only open Juan's letter
             'maria': ['maria'], // Maria can only open Maria's letter
             'carlos': ['carlos'], // Carlos can only open Carlos's letter
-            'sofia': ['sofia'], // Sofia can only open Sofia's letter
-            'miguel': ['miguel'], // Miguel can only open Miguel's letter
-            'ana': ['ana'] // Ana can only open Ana's letter
+            'sofia': ['sofia'] // Sofia can only open Sofia's letter
         };
         
         // Get current person (in real app, this would come from login)
