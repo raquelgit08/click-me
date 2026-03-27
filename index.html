@@ -15,7 +15,7 @@
             padding: 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden; /* Allow vertical scrolling */
         }
         
         /* Animated background elements */
@@ -216,7 +216,7 @@
             transform: translate(-50%, -50%);
             text-align: center;
             color: white;
-            z-index: 1;
+            z-index: 4; /* Ensure content is above flap */
         }
         
         .envelope-icon {
@@ -327,6 +327,27 @@
             line-height: 1.8;
             font-size: 1.1rem;
             color: #333;
+            max-height: 60vh; /* Limit height */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+        
+        /* Custom scrollbar styling */
+        .letter-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .letter-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .letter-content::-webkit-scrollbar-thumb {
+            background: #ff6b9d;
+            border-radius: 10px;
+        }
+        
+        .letter-content::-webkit-scrollbar-thumb:hover {
+            background: #c44569;
         }
         
         .letter-to {
