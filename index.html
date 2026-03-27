@@ -1014,31 +1014,19 @@ Miguel</div>
             
             const envelope = document.getElementById(`envelope-${recipient}`);
             const letter = document.getElementById(`letter-${recipient}`);
-            const flap = document.getElementById(`flap-${recipient}`);
             
-            // Open flap
-            flap.classList.add('open');
-            
-            // Show letter and hide envelope after flap animation
-            setTimeout(() => {
-                envelope.classList.add('hide-envelope');
-                letter.classList.add('show');
-            }, 800);
+            // Hide envelope and show letter immediately
+            envelope.classList.add('hide-envelope');
+            letter.classList.add('show');
         }
         
         function closeLetter(recipient) {
             const envelope = document.getElementById(`envelope-${recipient}`);
             const letter = document.getElementById(`letter-${recipient}`);
-            const flap = document.getElementById(`flap-${recipient}`);
             
-            // Hide letter
+            // Hide letter and show envelope immediately
             letter.classList.remove('show');
-            
-            // Show envelope and close flap after letter animation
-            setTimeout(() => {
-                envelope.classList.remove('hide-envelope');
-                flap.classList.remove('open');
-            }, 300);
+            envelope.classList.remove('hide-envelope');
         }
         
         function showLockMessage() {
