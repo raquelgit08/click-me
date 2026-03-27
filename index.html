@@ -378,6 +378,12 @@
             margin-bottom: 20px;
         }
         
+        .envelopes-grid.single-envelope {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+            justify-content: center;
+        }
+
         @media (max-width: 768px) {
             .envelopes-grid {
                 grid-template-columns: 1fr;
@@ -876,23 +882,26 @@ Miguel</div>
         document.head.appendChild(style);
         
         function updateEnvelopeStates() {
-            // Reset all envelopes to normal
+            // Hide all envelope items first
             Object.keys(letterPermissions).forEach(person => {
-                const envelope = document.getElementById(`envelope-${person}`);
-                if (envelope) {
-                    envelope.classList.remove('locked');
+                const envelopeItem = document.getElementById(`envelope-${person}`).parentElement;
+                if (envelopeItem) {
+                    envelopeItem.style.display = 'none';
                 }
             });
             
-            // Lock envelopes that this user cannot open
-            Object.keys(letterPermissions).forEach(person => {
-                if (!letterPermissions[currentUser] || !letterPermissions[currentUser].includes(person)) {
-                    const envelope = document.getElementById(`envelope-${person}`);
-                    if (envelope) {
-                        envelope.classList.add('locked');
-                    }
+            // Show only the current user's envelope
+            if (letterPermissions[currentUser]) {
+                const userEnvelope = document.getElementById(`envelope-${currentUser}`);
+                if (userEnvelope) {
+                    userEnvelope.parentElement.style.display = 'block';
+                    userEnvelope.classList.remove('locked');
+                    
+                    // Add single-envelope class to grid for better centering
+                    const grid = document.querySelector('.envelopes-grid');
+                    grid.classList.add('single-envelope');
                 }
-            });
+            }
         }
         
         function openLetter(recipient) {
