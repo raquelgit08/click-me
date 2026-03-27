@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Modern Open Letter</title>
+    <title>Multiple Letters - Open Letter</title>
     <style>
         * {
             margin: 0;
@@ -15,7 +15,8 @@
             padding: 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             position: relative;
-            overflow-x: hidden; /* Allow vertical scrolling */
+            overflow-x: hidden;
+            overflow-y: auto;
         }
         
         /* Animated background elements */
@@ -68,13 +69,13 @@
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             position: relative;
             z-index: 10;
         }
         
         .header h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 300;
             margin-bottom: 15px;
             text-shadow: 0 2px 20px rgba(0,0,0,0.3);
@@ -82,7 +83,7 @@
         }
         
         .header p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             animation: fadeInUp 1s ease-out 0.3s both;
         }
@@ -109,18 +110,23 @@
             }
         }
         
-        .envelope-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 60vh;
+        .envelopes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
             position: relative;
             z-index: 10;
         }
         
+        .envelope-item {
+            position: relative;
+        }
+        
         .envelope {
-            width: 400px;
-            height: 250px;
+            width: 100%;
+            height: 200px;
             position: relative;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -139,7 +145,17 @@
         }
         
         .envelope:hover {
-            transform: translateY(-10px) scale(1.05);
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        .envelope.locked {
+            cursor: not-allowed;
+            opacity: 0.6;
+            filter: grayscale(100%);
+        }
+        
+        .envelope.locked:hover {
+            transform: none;
         }
         
         .envelope-front {
@@ -148,7 +164,7 @@
             height: 100%;
             background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
             border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -207,6 +223,7 @@
             border: 3px solid #ff6b9d;
             border-top: none;
             border-radius: 0 0 12px 12px;
+            z-index: 0;
         }
         
         .envelope-content {
@@ -216,12 +233,12 @@
             transform: translate(-50%, -50%);
             text-align: center;
             color: white;
-            z-index: 4; /* Ensure content is above flap */
+            z-index: 4;
         }
         
         .envelope-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
+            font-size: 40px;
+            margin-bottom: 15px;
             animation: pulse 2s infinite;
         }
         
@@ -235,20 +252,20 @@
         }
         
         .envelope-title {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         
         .envelope-subtitle {
-            font-size: 1rem;
+            font-size: 0.9rem;
             opacity: 0.9;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .envelope-arrow {
-            font-size: 24px;
+            font-size: 18px;
             animation: bounce 2s infinite;
         }
         
@@ -257,16 +274,31 @@
                 transform: translateY(0);
             }
             40% {
-                transform: translateY(-10px);
+                transform: translateY(-8px);
             }
             60% {
-                transform: translateY(-5px);
+                transform: translateY(-4px);
             }
         }
         
+        .recipient-name {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 5;
+        }
+        
         .letter {
-            width: 50%;
-            max-width: 400px;
+            width: 90%;
+            max-width: 500px;
             min-height: 400px;
             background: white;
             border-radius: 15px;
@@ -275,6 +307,11 @@
             display: none;
             animation: letterSlide 0.8s ease-out;
             margin: 0 auto;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
         }
         
         .letter.show {
@@ -324,43 +361,24 @@
         }
         
         .letter-content {
-            padding: 20px;
+            padding: 25px;
             font-family: 'Georgia', serif;
             line-height: 1.6;
             font-size: 1rem;
             color: #333;
-            max-height: 50vh; /* Reduced height */
-            overflow-y: auto; /* Enable vertical scrolling */
-        }
-        
-        /* Custom scrollbar styling */
-        .letter-content::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .letter-content::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        .letter-content::-webkit-scrollbar-thumb {
-            background: #ff6b9d;
-            border-radius: 10px;
-        }
-        
-        .letter-content::-webkit-scrollbar-thumb:hover {
-            background: #c44569;
+            max-height: 60vh;
+            overflow-y: auto;
         }
         
         .letter-to {
             color: #666;
             font-style: italic;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .letter-text {
             white-space: pre-wrap;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         
         .letter-signature {
@@ -373,29 +391,45 @@
             display: none !important;
         }
         
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            z-index: 10;
+            border-radius: 15px;
+        }
+        
         @media (max-width: 768px) {
-            .envelope, .letter {
-                width: 90%;
-                max-width: 350px;
+            .envelopes-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .envelope {
+                height: 180px;
             }
             
             .letter {
-                width: 90%;
-                min-height: 350px;
+                width: 95%;
+                max-width: 400px;
             }
             
             .header h1 {
                 font-size: 2rem;
             }
             
-            .envelope {
-                height: 200px;
-            }
-            
-            .letter-content {
-                max-height: 40vh;
-                padding: 15px;
-                font-size: 0.9rem;
+            .recipient-name {
+                font-size: 0.8rem;
+                padding: 4px 12px;
             }
         }
     </style>
@@ -407,55 +441,293 @@
     <div class="bg-element"></div>
     
     <div class="header">
-        <h1>Special Message</h1>
-        <p>Click on the envelope below to reveal your special message</p>
+        <h1>Personal Letters</h1>
+        <p>Each person can only open their own letter. Find your envelope below!</p>
     </div>
     
-    <div class="envelope-wrapper">
-        <div class="envelope" id="envelope" onclick="openLetter()">
-            <div class="envelope-front">
-                <div class="envelope-flap" id="flap"></div>
-                <div class="envelope-body"></div>
-                <div class="envelope-content">
-                    <div class="envelope-icon">✉️</div>
-                    <div class="envelope-title">A Special Message Just For You</div>
-                    <div class="envelope-subtitle">Click to open</div>
-                    <div class="envelope-arrow">▼</div>
+    <div class="envelopes-grid">
+        <!-- Envelope 1 - For Juan -->
+        <div class="envelope-item">
+            <div class="recipient-name">Juan</div>
+            <div class="envelope" id="envelope-juan" onclick="openLetter('juan')">
+                <div class="envelope-front">
+                    <div class="envelope-flap" id="flap-juan"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-content">
+                        <div class="envelope-icon">✉️</div>
+                        <div class="envelope-title">Special Message</div>
+                        <div class="envelope-subtitle">Click to open</div>
+                        <div class="envelope-arrow">▼</div>
+                    </div>
                 </div>
             </div>
-        </div>
         
-        <div class="letter" id="letter">
-            <div class="letter-header">
-                <div class="letter-title">A Special Message Just For You</div>
-                <button class="close-btn" onclick="closeLetter()">✕</button>
+        <!-- Envelope 2 - For Maria -->
+        <div class="envelope-item">
+            <div class="recipient-name">Maria</div>
+            <div class="envelope" id="envelope-maria" onclick="openLetter('maria')">
+                <div class="envelope-front">
+                    <div class="envelope-flap" id="flap-maria"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-content">
+                        <div class="envelope-icon">✉️</div>
+                        <div class="envelope-title">Special Message</div>
+                        <div class="envelope-subtitle">Click to open</div>
+                        <div class="envelope-arrow">▼</div>
+                    </div>
+                </div>
             </div>
-            <div class="letter-content">
-                <div class="letter-to">To: Amazing Person</div>
-                <div class="letter-text">Dear Amazing Person,
-
-Sometimes in the rush of everyday life, we forget to stop and appreciate the beautiful moments that make life worth living.
-
-Today, I wanted to take a moment to remind you how special you are. Your kindness, your strength, and your unique spirit make the world a brighter place.
-
-Every challenge you've faced has made you stronger, every smile you've shared has made someone's day better, and every dream you're chasing has the power to inspire others.
-
-Never forget that you are capable of incredible things, that you are loved more than you know, and that your presence in this world matters deeply.
-
-Keep shining, keep growing, and keep being the wonderful person you are.
-
-With all my heart,
-Someone Who Believes in You</div>
-                <div class="letter-signature">From: Someone Who Cares</div>
+        
+        <!-- Envelope 3 - For Carlos -->
+        <div class="envelope-item">
+            <div class="recipient-name">Carlos</div>
+            <div class="envelope" id="envelope-carlos" onclick="openLetter('carlos')">
+                <div class="envelope-front">
+                    <div class="envelope-flap" id="flap-carlos"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-content">
+                        <div class="envelope-icon">✉️</div>
+                        <div class="envelope-title">Special Message</div>
+                        <div class="envelope-subtitle">Click to open</div>
+                        <div class="envelope-arrow">▼</div>
+                    </div>
+                </div>
             </div>
+        
+        <!-- Envelope 4 - For Sofia -->
+        <div class="envelope-item">
+            <div class="recipient-name">Sofia</div>
+            <div class="envelope" id="envelope-sofia" onclick="openLetter('sofia')">
+                <div class="envelope-front">
+                    <div class="envelope-flap" id="flap-sofia"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-content">
+                        <div class="envelope-icon">✉️</div>
+                        <div class="envelope-title">Special Message</div>
+                        <div class="envelope-subtitle">Click to open</div>
+                        <div class="envelope-arrow">▼</div>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- Envelope 5 - For Miguel -->
+        <div class="envelope-item">
+            <div class="recipient-name">Miguel</div>
+            <div class="envelope" id="envelope-miguel" onclick="openLetter('miguel')">
+                <div class="envelope-front">
+                    <div class="envelope-flap" id="flap-miguel"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-content">
+                        <div class="envelope-icon">✉️</div>
+                        <div class="envelope-title">Special Message</div>
+                        <div class="envelope-subtitle">Click to open</div>
+                        <div class="envelope-arrow">▼</div>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- Envelope 6 - For Ana -->
+        <div class="envelope-item">
+            <div class="recipient-name">Ana</div>
+            <div class="envelope" id="envelope-ana" onclick="openLetter('ana')">
+                <div class="envelope-front">
+                    <div class="envelope-flap" id="flap-ana"></div>
+                    <div class="envelope-body"></div>
+                    <div class="envelope-content">
+                        <div class="envelope-icon">✉️</div>
+                        <div class="envelope-title">Special Message</div>
+                        <div class="envelope-subtitle">Click to open</div>
+                        <div class="envelope-arrow">▼</div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
+    <!-- Letters (hidden by default) -->
+    <div class="letter" id="letter-juan">
+        <div class="letter-header">
+            <div class="letter-title">Special Message for Juan</div>
+            <button class="close-btn" onclick="closeLetter('juan')">✕</button>
         </div>
+        <div class="letter-content">
+            <div class="letter-to">To: Juan</div>
+            <div class="letter-text">Dear Juan,
+
+I hope this letter finds you well! I wanted to take a moment to tell you how much your friendship means to me. Your kindness and laughter always brighten up my day.
+
+Remember that time we spent at the beach last summer? Those moments are some of my happiest memories. You have this amazing ability to make everyone around you feel comfortable and valued.
+
+Thank you for being such a wonderful friend. I'm grateful to have you in my life.
+
+With warmest regards,
+Maria</div>
+            <div class="letter-signature">From: Maria</div>
+        </div>
+    </div>
+    
+    <div class="letter" id="letter-maria">
+        <div class="letter-header">
+            <div class="letter-title">Special Message for Maria</div>
+            <button class="close-btn" onclick="closeLetter('maria')">✕</button>
+        </div>
+        <div class="letter-content">
+            <div class="letter-to">To: Maria</div>
+            <div class="letter-text">Dear Maria,
+
+Your smile lights up every room you enter! I wanted to thank you for always being there for me, especially during those tough exams last month.
+
+I admire your strength and determination. You inspire me to be a better person every single day. The way you handle challenges with grace is truly remarkable.
+
+I'm so lucky to call you my friend. Looking forward to many more adventures together!
+
+With deepest affection,
+Carlos</div>
+            <div class="letter-signature">From: Carlos</div>
+        </div>
+    </div>
+    
+    <div class="letter" id="letter-carlos">
+        <div class="letter-header">
+            <div class="letter-title">Special Message for Carlos</div>
+            <button class="close-btn" onclick="closeLetter('carlos')">✕</button>
+        </div>
+        <div class="letter-content">
+            <div class="letter-to">To: Carlos</div>
+            <div class="letter-text">Dear Carlos,
+
+Your dedication to your studies is truly inspiring! I've watched you push through late nights and early mornings, and your commitment amazes me.
+
+Don't forget to take breaks and celebrate your achievements - you've earned them! Your future is so bright, and I have no doubt you'll achieve all your dreams.
+
+Thank you for being such an incredible role model. Keep shining bright!
+
+With admiration,
+Sofia</div>
+            <div class="letter-signature">From: Sofia</div>
+        </div>
+    </div>
+    
+    <div class="letter" id="letter-sofia">
+        <div class="letter-header">
+            <div class="letter-title">Special Message for Sofia</div>
+            <button class="close-btn" onclick="closeLetter('sofia')">✕</button>
+        </div>
+        <div class="letter-content">
+            <div class="letter-to">To: Sofia</div>
+            <div class="letter-text">Dear Sofia,
+
+Your creativity and talent never cease to amaze me! The way you see beauty in ordinary things is a gift that makes the world more wonderful for everyone around you.
+
+Thank you for sharing your art and your heart with us. Your perspective has opened my eyes to so many new possibilities.
+
+Never stop creating, never stop dreaming. You're destined for amazing things!
+
+With endless appreciation,
+Miguel</div>
+            <div class="letter-signature">From: Miguel</div>
+        </div>
+    </div>
+    
+    <div class="letter" id="letter-miguel">
+        <div class="letter-header">
+            <div class="letter-title">Special Message for Miguel</div>
+            <button class="close-btn" onclick="closeLetter('miguel')">✕</button>
+        </div>
+        <div class="letter-content">
+            <div class="letter-to">To: Miguel</div>
+            <div class="letter-text">Dear Miguel,
+
+Your loyalty and friendship mean the world to me! Through thick and thin, you've always been the steady presence I can count on.
+
+I appreciate your wisdom and the way you always know just what to say to make things better. This world is a better place with you in it.
+
+Thank you for being my rock and my confidant. Life's journey is so much better with friends like you.
+
+With deepest gratitude,
+Ana</div>
+            <div class="letter-signature">From: Ana</div>
+        </div>
+    </div>
+    
+    <div class="letter" id="letter-ana">
+        <div class="letter-header">
+            <div class="letter-title">Special Message for Ana</div>
+            <button class="close-btn" onclick="closeLetter('ana')">✕</button>
+        </div>
+        <div class="letter-content">
+            <div class="letter-to">To: Ana</div>
+            <div class="letter-text">Dear Ana,
+
+Your compassion and kindness touch everyone you meet! I've seen how you go out of your way to help others, expecting nothing in return.
+
+The world needs more people like you - those who lead with love and empathy. Your presence makes every gathering warmer and every challenge more manageable.
+
+Thank you for being such a beautiful soul inside and out. Never stop being the amazing person you are!
+
+With love and respect,
+Juan</div>
+            <div class="letter-signature">From: Juan</div>
+        </div>
+    </div>
+    
+    <!-- Lock overlay for unauthorized access -->
+    <div class="lock-overlay" id="lockOverlay" style="display: none;">
+        <div>🔒 This letter is not for you</div>
     </div>
     
     <script>
-        function openLetter() {
-            const envelope = document.getElementById('envelope');
-            const letter = document.getElementById('letter');
-            const flap = document.getElementById('flap');
+        // Define who can open which letter
+        const letterPermissions = {
+            'juan': ['juan'], // Juan can only open Juan's letter
+            'maria': ['maria'], // Maria can only open Maria's letter
+            'carlos': ['carlos'], // Carlos can only open Carlos's letter
+            'sofia': ['sofia'], // Sofia can only open Sofia's letter
+            'miguel': ['miguel'], // Miguel can only open Miguel's letter
+            'ana': ['ana'] // Ana can only open Ana's letter
+        };
+        
+        // Get current person (in real app, this would come from login)
+        // For demo, we'll use a simple prompt
+        let currentUser = '';
+        
+        function askForIdentity() {
+            const name = prompt('Please enter your name to find your letter:');
+            if (name) {
+                currentUser = name.toLowerCase();
+                updateEnvelopeStates();
+            }
+        }
+        
+        function updateEnvelopeStates() {
+            // Reset all envelopes to normal
+            Object.keys(letterPermissions).forEach(person => {
+                const envelope = document.getElementById(`envelope-${person}`);
+                if (envelope) {
+                    envelope.classList.remove('locked');
+                }
+            });
+            
+            // Lock envelopes that this user cannot open
+            Object.keys(letterPermissions).forEach(person => {
+                if (!letterPermissions[currentUser] || !letterPermissions[currentUser].includes(person)) {
+                    const envelope = document.getElementById(`envelope-${person}`);
+                    if (envelope) {
+                        envelope.classList.add('locked');
+                    }
+                }
+            });
+        }
+        
+        function openLetter(recipient) {
+            // Check if current user can open this letter
+            if (!letterPermissions[currentUser] || !letterPermissions[currentUser].includes(recipient)) {
+                showLockMessage();
+                return;
+            }
+            
+            const envelope = document.getElementById(`envelope-${recipient}`);
+            const letter = document.getElementById(`letter-${recipient}`);
+            const flap = document.getElementById(`flap-${recipient}`);
             
             // Open flap
             flap.classList.add('open');
@@ -467,10 +739,10 @@ Someone Who Believes in You</div>
             }, 800);
         }
         
-        function closeLetter() {
-            const envelope = document.getElementById('envelope');
-            const letter = document.getElementById('letter');
-            const flap = document.getElementById('flap');
+        function closeLetter(recipient) {
+            const envelope = document.getElementById(`envelope-${recipient}`);
+            const letter = document.getElementById(`letter-${recipient}`);
+            const flap = document.getElementById(`flap-${recipient}`);
             
             // Hide letter
             letter.classList.remove('show');
@@ -481,6 +753,20 @@ Someone Who Believes in You</div>
                 flap.classList.remove('open');
             }, 300);
         }
+        
+        function showLockMessage() {
+            const lockOverlay = document.getElementById('lockOverlay');
+            lockOverlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                lockOverlay.style.display = 'none';
+            }, 2000);
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            askForIdentity();
+        });
     </script>
 </body>
 </html>
