@@ -60,7 +60,6 @@
             margin: 0 auto;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
-            display: block !important;
         }
 
         .envelope {
@@ -69,7 +68,7 @@
             height: 250px;
             background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
             border-radius: 10px;
-            display: flex !important;
+            display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -454,6 +453,10 @@ Someone Who Believes in You
             const letterContainer = document.getElementById('letter');
             const envelopeFlap = envelopeContainer.querySelector('.envelope-flap');
             
+            console.log('Opening letter...');
+            console.log('Envelope container:', envelopeContainer);
+            console.log('Letter container:', letterContainer);
+            
             // Animate envelope flap opening
             envelopeFlap.classList.add('open');
             
@@ -469,6 +472,8 @@ Someone Who Believes in You
             const letterContainer = document.getElementById('letter');
             const envelopeFlap = envelopeContainer.querySelector('.envelope-flap');
             
+            console.log('Closing letter...');
+            
             // Hide letter
             letterContainer.classList.remove('show');
             
@@ -478,6 +483,17 @@ Someone Who Believes in You
                 envelopeFlap.classList.remove('open');
             }, 200);
         }
+
+        // Test envelope visibility
+        window.addEventListener('load', function() {
+            console.log('Page loaded');
+            const envelope = document.querySelector('.envelope');
+            console.log('Envelope found:', envelope);
+            if (envelope) {
+                console.log('Envelope styles:', window.getComputedStyle(envelope));
+                console.log('Envelope display:', window.getComputedStyle(envelope).display);
+            }
+        });
     </script>
 </body>
 </html>
