@@ -112,12 +112,14 @@
         
         .envelopes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1400px;
             margin: 0 auto;
             position: relative;
             z-index: 10;
+            padding: 20px;
         }
         
         .envelope-item {
@@ -408,10 +410,144 @@
             border-radius: 15px;
         }
         
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease-out;
+            position: relative;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            margin-bottom: 30px;
+        }
+        
+        .modal-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .modal-subtitle {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: #ff6b9d;
+            box-shadow: 0 0 0 3px rgba(255,107,157,0.1);
+        }
+        
+        .modal-button {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(255,107,157,0.3);
+        }
+        
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,107,157,0.4);
+        }
+        
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        .available-names {
+            background: rgba(255,107,157,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .available-names-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .name-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .name-tag {
+            background: white;
+            border: 1px solid #ff6b9d;
+            color: #ff6b9d;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
         @media (max-width: 768px) {
             .envelopes-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 25px;
+                padding: 15px;
             }
             
             .envelope {
@@ -430,6 +566,22 @@
             .recipient-name {
                 font-size: 0.8rem;
                 padding: 4px 12px;
+            }
+            
+            .modal {
+                padding: 30px;
+            }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .envelopes-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, 1fr);
+                gap: 20px;
             }
         }
     </style>
@@ -670,9 +822,31 @@ Juan</div>
         </div>
     </div>
     
-    <!-- Lock overlay for unauthorized access -->
-    <div class="lock-overlay" id="lockOverlay" style="display: none;">
-        <div>🔒 This letter is not for you</div>
+    <!-- Modal for name entry -->
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">✉️</div>
+                <h2 class="modal-title">Find Your Personal Letter</h2>
+                <p class="modal-subtitle">Enter your name to discover which special message is waiting for you</p>
+            </div>
+            
+            <input type="text" class="modal-input" id="nameInput" placeholder="Type your name here..." autocomplete="off">
+            
+            <button class="modal-button" onclick="submitName()">Find My Letter</button>
+            
+            <div class="available-names">
+                <div class="available-names-title">Available recipients:</div>
+                <div class="name-tags">
+                    <span class="name-tag">Juan</span>
+                    <span class="name-tag">Maria</span>
+                    <span class="name-tag">Carlos</span>
+                    <span class="name-tag">Sofia</span>
+                    <span class="name-tag">Miguel</span>
+                    <span class="name-tag">Ana</span>
+                </div>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -687,16 +861,51 @@ Juan</div>
         };
         
         // Get current person (in real app, this would come from login)
-        // For demo, we'll use a simple prompt
+        // For demo, we'll use a beautiful modal
         let currentUser = '';
         
-        function askForIdentity() {
-            const name = prompt('Please enter your name to find your letter:');
+        function submitName() {
+            const nameInput = document.getElementById('nameInput');
+            const name = nameInput.value.trim();
+            
             if (name) {
                 currentUser = name.toLowerCase();
+                closeModal();
                 updateEnvelopeStates();
+            } else {
+                // Shake animation for empty input
+                nameInput.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    nameInput.style.animation = '';
+                }, 500);
             }
         }
+        
+        function closeModal() {
+            const modal = document.getElementById('nameModal');
+            modal.style.display = 'none';
+        }
+        
+        // Add enter key support
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.getElementById('nameInput');
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitName();
+                }
+            });
+        });
+        
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
         
         function updateEnvelopeStates() {
             // Reset all envelopes to normal
@@ -765,7 +974,7 @@ Juan</div>
         
         // Initialize on page load
         window.addEventListener('load', function() {
-            askForIdentity();
+            // Modal is already visible by default, no need to call anything
         });
     </script>
 </body>
